@@ -3,7 +3,7 @@ package com.framgia.music_28.data.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class User implements Parcelable{
+public class User implements Parcelable {
     private int mId;
     private String mKind;
     private String mPermalink;
