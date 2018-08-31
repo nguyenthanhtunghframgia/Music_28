@@ -4,6 +4,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.MainActivity">
+    tools:context=".screen.main.MainActivity">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </android.support.design.widget.TabLayout>
+
+    <ImageButton
+        android:id="@+id/button_next"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_56"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_skip_next_24px" />
+
+    <ImageButton
+        android:id="@+id/button_play_pause"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_56"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
+        app:layout_constraintEnd_toStartOf="@+id/button_next"
+        app:layout_constraintTop_toTopOf="@+id/button_next"
+        app:srcCompat="@drawable/ic_track_play_pause" />
+
+    <ImageButton
+        android:id="@+id/button_previous"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_56"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toStartOf="@+id/button_play_pause"
+        app:layout_constraintTop_toTopOf="@+id/button_play_pause"
+        app:srcCompat="@drawable/ic_baseline_skip_previous_24px" />
+
+    <ImageView
+        android:id="@+id/image_track"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_track_name"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/text_track_name"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_56"
+        android:gravity="center_vertical|center_horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
+        app:layout_constraintEnd_toStartOf="@+id/button_previous"
+        app:layout_constraintStart_toEndOf="@+id/image_track"
+        app:layout_constraintTop_toTopOf="@+id/button_previous" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_track_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
