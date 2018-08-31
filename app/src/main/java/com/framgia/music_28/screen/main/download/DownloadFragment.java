@@ -18,6 +18,7 @@ public class DownloadFragment extends Fragment {
     public static DownloadFragment newInstance() {
         return new DownloadFragment();
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
