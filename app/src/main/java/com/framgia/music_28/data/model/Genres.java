@@ -1,13 +1,13 @@
 package com.framgia.music_28.data.model;
 
-public class Genre {
+public class Genres {
     private String mName;
     private int mImageId;
 
-    public Genre() {
+    public Genres() {
     }
 
-    public Genre(String name, int imageId) {
+    public Genres(String name, int imageId) {
         mName = name;
         mImageId = imageId;
     }
