@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
+        buildConfigField "String", "API_KEY", "\"${API_KEY}\""
         vectorDrawables.useSupportLibrary = true
         applicationId "com.framgia.music_28"
         minSdkVersion 15

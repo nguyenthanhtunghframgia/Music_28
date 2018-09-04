@@ -23,7 +23,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_skip_next_24px" />
+        app:srcCompat="@drawable/ic_skip_next" />
 
     <ImageButton
         android:id="@+id/button_play_pause"
@@ -42,7 +42,7 @@
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toStartOf="@+id/button_play_pause"
         app:layout_constraintTop_toTopOf="@+id/button_play_pause"
-        app:srcCompat="@drawable/ic_baseline_skip_previous_24px" />
+        app:srcCompat="@drawable/ic_skip_previous" />
 
     <ImageView
         android:id="@+id/image_track"
