@@ -10,26 +10,30 @@
         android:id="@+id/tab_layout"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabTextColor="@android:color/white">
 
     </android.support.design.widget.TabLayout>
 
     <ImageButton
         android:id="@+id/button_next"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
-        android:scaleType="fitCenter"
+        android:background="@color/colorPrimary"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_skip_next" />
 
     <ImageButton
         android:id="@+id/button_play_pause"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
-        android:scaleType="fitCenter"
+        android:background="@color/colorPrimary"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintEnd_toStartOf="@+id/button_next"
         app:layout_constraintTop_toTopOf="@+id/button_next"
@@ -37,9 +41,10 @@
 
     <ImageButton
         android:id="@+id/button_previous"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
-        android:scaleType="fitCenter"
+        android:background="@color/colorPrimary"
+        android:scaleType="centerInside"
         app:layout_constraintEnd_toStartOf="@+id/button_play_pause"
         app:layout_constraintTop_toTopOf="@+id/button_play_pause"
         app:srcCompat="@drawable/ic_skip_previous" />
@@ -48,6 +53,7 @@
         android:id="@+id/image_track"
         android:layout_width="@dimen/dp_56"
         android:layout_height="@dimen/dp_56"
+        android:background="@color/colorPrimary"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +64,9 @@
         android:id="@+id/text_track_name"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_56"
+        android:background="@color/colorPrimary"
         android:gravity="center_vertical|center_horizontal"
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintEnd_toStartOf="@+id/button_previous"
         app:layout_constraintStart_toEndOf="@+id/image_track"

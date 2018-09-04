@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Music_28</string>
+    <string name="app_name">Music Player</string>
     <string name="tracks_fragment_title">All Track</string>
     <string name="genre_fragment_title">Genres</string>
     <string name="download_fragment_title">Download</string>
