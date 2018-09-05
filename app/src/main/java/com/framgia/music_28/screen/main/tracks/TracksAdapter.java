@@ -18,10 +18,15 @@ import java.util.ArrayList;
 public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TracksHolder> {
     private ArrayList<Track> mTracks;
     private Context mContext;
+    private OnItemTrackClickListener mOnItemTrackClickListener;
 
     public TracksAdapter(Context context, ArrayList<Track> tracks) {
         mContext = context;
         mTracks = tracks;
+    }
+
+    public void setOnItemTrackClickListener(OnItemTrackClickListener onItemTrackClickListener) {
+        mOnItemTrackClickListener = onItemTrackClickListener;
     }
 
     @NonNull
@@ -29,7 +34,7 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TracksHold
     public TracksHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_track, viewGroup, false);
-        return new TracksHolder(view, mContext);
+        return new TracksHolder(view, mContext, mOnItemTrackClickListener, mTracks);
     }
 
     @Override
@@ -42,24 +47,36 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TracksHold
         return mTracks.size() != 0 ? mTracks.size() : 0;
     }
 
-    public static class TracksHolder extends RecyclerView.ViewHolder {
+    public static class TracksHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Context mContext;
+        private ArrayList<Track> mTracks;
         private ImageView mImageTrack;
         private TextView mTextTrackName;
         private TextView mTextTrackUser;
+        private OnItemTrackClickListener mOnItemTrackClickListener;
 
-        public TracksHolder(@NonNull View itemView, Context context) {
+        public TracksHolder(@NonNull View itemView, Context context,
+                            OnItemTrackClickListener onItemTrackClickListener,
+                            ArrayList<Track> tracks) {
             super(itemView);
             mContext = context;
+            mTracks = tracks;
+            mOnItemTrackClickListener = onItemTrackClickListener;
             mImageTrack = itemView.findViewById(R.id.image_item_track);
             mTextTrackName = itemView.findViewById(R.id.text_item_track_name);
             mTextTrackUser = itemView.findViewById(R.id.text_item_track_user);
+            itemView.setOnClickListener(this);
         }
 
         private void bindData(Track track) {
             Glide.with(mContext).load(track.getArtWorkUrl()).into(mImageTrack);
             mTextTrackName.setText(track.getTitle());
             mTextTrackUser.setText(track.getGenre());
+        }
+
+        @Override
+        public void onClick(View v) {
+            mOnItemTrackClickListener.onItemClick(mTracks, getAdapterPosition());
         }
     }
 }

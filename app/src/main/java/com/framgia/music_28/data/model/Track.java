@@ -36,6 +36,7 @@ public class Track implements Parcelable {
         mDownloadUrl = in.readString();
         mIsDownloadable = in.readByte() != 0;
         mUri = in.readString();
+        mGenre = in.readString();
     }
 
     public static final Creator<Track> CREATOR = new Creator<Track>() {
@@ -64,6 +65,7 @@ public class Track implements Parcelable {
         dest.writeString(mDownloadUrl);
         dest.writeByte((byte) (mIsDownloadable ? 1 : 0));
         dest.writeString(mUri);
+        dest.writeString(mGenre);
     }
 
     public int getId() {

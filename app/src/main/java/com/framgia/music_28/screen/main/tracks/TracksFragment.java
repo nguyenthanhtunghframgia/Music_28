@@ -20,10 +20,12 @@ import com.framgia.music_28.data.model.Track;
 import com.framgia.music_28.data.repository.TrackRepository;
 import com.framgia.music_28.data.source.local.TrackLocalDataSource;
 import com.framgia.music_28.data.source.remote.TrackRemoteDataSource;
+import com.framgia.music_28.screen.play.PlayActivity;
+import com.framgia.music_28.service.MusicService;
 
 import java.util.ArrayList;
 
-public class TracksFragment extends Fragment implements TracksContract.View {
+public class TracksFragment extends Fragment implements TracksContract.View, OnItemTrackClickListener {
     private TracksContract.Presenter mPresenter;
 
     public TracksFragment() {
@@ -82,6 +84,7 @@ public class TracksFragment extends Fragment implements TracksContract.View {
     public void displayTracks(ArrayList<Track> tracks) {
         RecyclerView recyclerView = getView().findViewById(R.id.tracks_recycler_view);
         TracksAdapter tracksAdapter = new TracksAdapter(getContext(), tracks);
+        tracksAdapter.setOnItemTrackClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(tracksAdapter);
     }
@@ -89,5 +92,11 @@ public class TracksFragment extends Fragment implements TracksContract.View {
     @Override
     public void setPresenter(TracksContract.Presenter presenter) {
 
+    }
+
+    @Override
+    public void onItemClick(ArrayList<Track> tracks, int position) {
+        getContext().startService(MusicService.getServiceIntent(getContext(), tracks, position));
+        getContext().startActivity(PlayActivity.getPlayIntent(getContext()));
     }
 }
