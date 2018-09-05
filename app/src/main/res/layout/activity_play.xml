@@ -73,7 +73,7 @@
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@+id/seek_bar"
+        app:layout_constraintBottom_toTopOf="@+id/text_duration"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_track_play_user"
@@ -104,7 +104,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button_next"
-        app:srcCompat="@drawable/ic_repeat" />
+        app:srcCompat="@drawable/ic_track_repeat" />
 
     <ImageButton
         android:id="@+id/button_next"
@@ -130,7 +130,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/button_previous"
         app:layout_constraintTop_toTopOf="@+id/button_next"
-        app:srcCompat="@drawable/ic_play_arrow" />
+        app:srcCompat="@drawable/ic_track_play_pause" />
 
     <ImageButton
         android:id="@+id/button_previous"
@@ -158,6 +158,24 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_previous"
-        app:srcCompat="@drawable/ic_shuffle" />
+        app:srcCompat="@drawable/ic_track_shuffle" />
+
+    <TextView
+        android:id="@+id/text_current_time"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_28"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/seek_bar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/text_duration"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_28"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/seek_bar"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

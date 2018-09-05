@@ -6,4 +6,5 @@ public class Constants {
     public static final String ALL_MUSIC = "all-music";
     public static final String ALL_AUDIO = "all-audio";
     public static final String CLIENT_ID = "&client_id=";
+    public static final int SPAN_COUNT = 2;
 }
