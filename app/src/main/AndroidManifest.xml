@@ -13,10 +13,15 @@
         android:theme="@style/AppTheme">
         <activity android:name=".screen.main.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".screen.play.PlayActivity" />
+
+        <service
+            android:name=".service.MusicService"
+            android:exported="false" />
     </application>
 
 </manifest>
