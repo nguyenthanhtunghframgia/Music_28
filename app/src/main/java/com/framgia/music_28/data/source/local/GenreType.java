@@ -9,9 +9,9 @@ import java.lang.annotation.RetentionPolicy;
         GenreType.AMBIENT, GenreType.CLASSICAL, GenreType.COUNTRY})
 @Retention(RetentionPolicy.SOURCE)
 public @interface GenreType {
-    String ALL_MUSIC = "ALL MUSIC";
-    String ALL_AUDIO = "ALL AUDIO";
-    String ALTER_NATIVE_ROCK = "ALTERNATIVE ROCK";
+    String ALL_MUSIC = "ALL-MUSIC";
+    String ALL_AUDIO = "ALL-AUDIO";
+    String ALTER_NATIVE_ROCK = "ALTERNATIVEROCK";
     String AMBIENT = "AMBIENT";
     String CLASSICAL = "CLASSICAL";
     String COUNTRY = "COUNTRY";

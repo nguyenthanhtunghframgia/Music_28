@@ -1,4 +1,4 @@
-package com.framgia.music_28.screen.main.tracks;
+package com.framgia.music_28.screen;
 
 import com.framgia.music_28.data.model.Track;
 

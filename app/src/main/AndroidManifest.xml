@@ -18,9 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".screen.play.PlayActivity" />
-
+        <activity android:name=".screen.genredetail.GenreDetailActivity"/>
         <service
-            android:name=".service.MusicService"
+            android:name=".service.MusicPlayerService"
             android:exported="false" />
     </application>
 

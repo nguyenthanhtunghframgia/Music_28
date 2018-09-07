@@ -20,8 +20,9 @@ import com.framgia.music_28.data.model.Track;
 import com.framgia.music_28.data.repository.TrackRepository;
 import com.framgia.music_28.data.source.local.TrackLocalDataSource;
 import com.framgia.music_28.data.source.remote.TrackRemoteDataSource;
+import com.framgia.music_28.screen.OnItemTrackClickListener;
 import com.framgia.music_28.screen.play.PlayActivity;
-import com.framgia.music_28.service.MusicService;
+import com.framgia.music_28.service.MusicPlayerService;
 
 import java.util.ArrayList;
 
@@ -96,7 +97,7 @@ public class TracksFragment extends Fragment implements TracksContract.View, OnI
 
     @Override
     public void onItemClick(ArrayList<Track> tracks, int position) {
-        getContext().startService(MusicService.getServiceIntent(getContext(), tracks, position));
+        getContext().startService(MusicPlayerService.getServiceIntent(getContext(), tracks, position));
         getContext().startActivity(PlayActivity.getPlayIntent(getContext()));
     }
 }
