@@ -14,11 +14,13 @@ import com.framgia.music_28.R;
 import com.framgia.music_28.data.model.Genre;
 import com.framgia.music_28.data.repository.GenreRepository;
 import com.framgia.music_28.data.source.local.GenresLocalDataSource;
+import com.framgia.music_28.screen.OnItemGenreClickListener;
+import com.framgia.music_28.screen.genredetail.GenreDetailActivity;
 import com.framgia.music_28.util.Constants;
 
 import java.util.ArrayList;
 
-public class GenreFragment extends Fragment implements GenreContract.View {
+public class GenreFragment extends Fragment implements GenreContract.View, OnItemGenreClickListener {
     private GenreContract.Presenter mPresenter;
 
     public GenreFragment() {
@@ -52,6 +54,7 @@ public class GenreFragment extends Fragment implements GenreContract.View {
     public void displayGenres(ArrayList<Genre> genres) {
         RecyclerView recyclerView = getView().findViewById(R.id.genre_recycler_view);
         GenreAdapter genreAdapter = new GenreAdapter(getContext(), genres);
+        genreAdapter.setOnItemGenreClickListener(this);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), Constants.SPAN_COUNT));
         recyclerView.setAdapter(genreAdapter);
     }
@@ -59,5 +62,10 @@ public class GenreFragment extends Fragment implements GenreContract.View {
     @Override
     public void setPresenter(GenreContract.Presenter presenter) {
 
+    }
+
+    @Override
+    public void onItemGenreClick(String genre) {
+        getContext().startActivity(GenreDetailActivity.getGenreDetailIntent(getContext(), genre));
     }
 }

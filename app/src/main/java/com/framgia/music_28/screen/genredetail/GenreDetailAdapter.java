@@ -1,4 +1,4 @@
-package com.framgia.music_28.screen.main.tracks;
+package com.framgia.music_28.screen.genredetail;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,35 +12,29 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.framgia.music_28.R;
 import com.framgia.music_28.data.model.Track;
-import com.framgia.music_28.screen.OnItemTrackClickListener;
 
 import java.util.ArrayList;
 
-public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TracksHolder> {
+public class GenreDetailAdapter extends RecyclerView.Adapter<GenreDetailAdapter.GenreDetailHolder> {
     private ArrayList<Track> mTracks;
     private Context mContext;
-    private OnItemTrackClickListener mOnItemTrackClickListener;
 
-    public TracksAdapter(Context context, ArrayList<Track> tracks) {
+    public GenreDetailAdapter(Context context, ArrayList<Track> tracks) {
         mContext = context;
         mTracks = tracks;
     }
 
-    public void setOnItemTrackClickListener(OnItemTrackClickListener onItemTrackClickListener) {
-        mOnItemTrackClickListener = onItemTrackClickListener;
-    }
-
     @NonNull
     @Override
-    public TracksHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public GenreDetailHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_track, viewGroup, false);
-        return new TracksHolder(view, mContext, mOnItemTrackClickListener, mTracks);
+        return new GenreDetailHolder(view, mContext);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TracksHolder tracksHolder, int i) {
-        tracksHolder.bindData(mTracks.get(i));
+    public void onBindViewHolder(@NonNull GenreDetailHolder genreDetailHolder, int i) {
+        genreDetailHolder.bindData(mTracks.get(i));
     }
 
     @Override
@@ -48,21 +42,15 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TracksHold
         return mTracks.size() != 0 ? mTracks.size() : 0;
     }
 
-    public static class TracksHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class GenreDetailHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Context mContext;
-        private ArrayList<Track> mTracks;
         private ImageView mImageTrack;
         private TextView mTextTrackName;
         private TextView mTextTrackUser;
-        private OnItemTrackClickListener mOnItemTrackClickListener;
 
-        public TracksHolder(@NonNull View itemView, Context context,
-                            OnItemTrackClickListener onItemTrackClickListener,
-                            ArrayList<Track> tracks) {
+        public GenreDetailHolder(@NonNull View itemView, Context context) {
             super(itemView);
             mContext = context;
-            mTracks = tracks;
-            mOnItemTrackClickListener = onItemTrackClickListener;
             mImageTrack = itemView.findViewById(R.id.image_item_track);
             mTextTrackName = itemView.findViewById(R.id.text_item_track_name);
             mTextTrackUser = itemView.findViewById(R.id.text_item_track_user);
@@ -77,7 +65,6 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.TracksHold
 
         @Override
         public void onClick(View v) {
-            mOnItemTrackClickListener.onItemClick(mTracks, getAdapterPosition());
         }
     }
 }

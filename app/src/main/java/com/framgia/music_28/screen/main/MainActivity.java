@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.framgia.music_28.R;
+import com.framgia.music_28.util.Constants;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         TabLayout mTabLayout = findViewById(R.id.tab_layout);
         ViewPager mViewPager = findViewById(R.id.view_pager);
+        mViewPager.setOffscreenPageLimit(Constants.PAGE_LIMIT);
         FragmentManager fragmentManager = getSupportFragmentManager();
         MainPagerAdapter pagerAdapter = new MainPagerAdapter(this, fragmentManager);
         mViewPager.setAdapter(pagerAdapter);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,14 +14,20 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.framgia.music_28.R;
 import com.framgia.music_28.data.model.Track;
-import com.framgia.music_28.service.MusicService;
+import com.framgia.music_28.service.ButtonState;
+import com.framgia.music_28.service.MusicPlayerService;
+import com.framgia.music_28.service.MediaPlayerListener;
+import com.framgia.music_28.util.Constants;
+import com.framgia.music_28.service.MediaStates;
 
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener,
-        SeekBar.OnSeekBarChangeListener {
+        SeekBar.OnSeekBarChangeListener,
+        MediaPlayerListener {
     private ImageButton mButtonBack;
     private ImageButton mButtonDownload;
     private TextView mTextTrackName;
@@ -35,7 +42,9 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton mButtonPrevious;
     private ImageButton mButtonShuffle;
     private boolean mIsBound;
-    private MusicService mMusicService;
+    private MusicPlayerService mMusicPlayerService;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +57,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, MusicService.class);
+        Intent intent = new Intent(this, MusicPlayerService.class);
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -73,29 +82,6 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         mButtonShuffle = findViewById(R.id.button_shuffle);
     }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicService.MyServiceBinder binder = (MusicService.MyServiceBinder) service;
-            mMusicService = binder.getMusicService();
-            showTrack(mMusicService.getTrack());
-            mIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mIsBound = false;
-        }
-    };
-
-    private void showTrack(Track track) {
-        mTextTrackName.setText(track.getTitle());
-        mTextTrackUser.setText(track.getGenre());
-        mTextDuration.setText(String.valueOf(track.getDuration()));
-        Glide.with(this).load(track.getArtWorkUrl()).into(mImageTrack);
-        mSeekBar.setMax(track.getDuration());
-    }
-
     private void registerEventListener() {
         mButtonBack.setOnClickListener(this);
         mButtonDownload.setOnClickListener(this);
@@ -107,19 +93,86 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         mSeekBar.setOnSeekBarChangeListener(this);
     }
 
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            MusicPlayerService.MyServiceBinder binder = (MusicPlayerService.MyServiceBinder) service;
+            mMusicPlayerService = binder.getMusicService();
+            mIsBound = true;
+            mMusicPlayerService.registerMediaPlayerListener(PlayActivity.this);
+            showTrack(mMusicPlayerService.getCurrentTrack());
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mIsBound = false;
+        }
+    };
+
+    private void showTrack(Track track) {
+        mTextTrackName.setText(track.getTitle());
+        mTextTrackUser.setText(track.getGenre());
+        mTextDuration.setText(mMusicPlayerService.getDurationFormat(track.getDuration()));
+        Glide.with(this).load(track.getArtWorkUrl()).into(mImageTrack);
+        mSeekBar.setMax(track.getDuration());
+        updateTime();
+    }
+
+    private void updateTime() {
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mSeekBar.setProgress(mMusicPlayerService.getCurrentTime());
+                mTextCurrentTime.setText(mMusicPlayerService.
+                        getDurationFormat(mMusicPlayerService.getCurrentTime()));
+                mHandler.postDelayed(mRunnable, Constants.DELAY_TIME_MILI);
+            }
+        };
+        mHandler.post(mRunnable);
+    }
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
     }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
+        mMusicPlayerService.seek(seekBar.getProgress());
+    }
 
+    @Override
+    public void onTrackChange(Track track) {
+        showTrack(track);
+    }
+
+    @Override
+    public void onShuffleChanged(int shuffleType) {
+        mButtonShuffle.setImageLevel(shuffleType);
+    }
+
+    @Override
+    public void onRepeatChanged(int repeatType) {
+        mButtonRepeat.setImageLevel(repeatType);
+    }
+
+    @Override
+    public void onMediaStateChanged(int mediaState) {
+        if (mediaState == MediaStates.PLAYING) {
+            mButtonPlayPause.setImageLevel(ButtonState.PAUSED);
+        } else if (mediaState == MediaStates.PAUSED) {
+            mButtonPlayPause.setImageLevel(ButtonState.PLAYING);
+        }
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(this, getResources().getString(R.string.media_error),
+                Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -151,25 +204,47 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void doRepeat() {
-    }
-
     private void doNext() {
-    }
-
-    private void doPlayPause() {
+        mMusicPlayerService.next();
     }
 
     private void doPrevious() {
+        mMusicPlayerService.previous();
+    }
+
+    private void doRepeat() {
+        mMusicPlayerService.changeRepeat();
     }
 
     private void doShuffle() {
+        mMusicPlayerService.changeShuffle();
+    }
+
+    private void doPlayPause() {
+        mMusicPlayerService.playTrack();
     }
 
     private void doDownload() {
+        mMusicPlayerService.download();
     }
 
     private void doBack() {
         onBackPressed();
+        mHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mIsBound) {
+            unbindService(mServiceConnection);
+            mIsBound = false;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(mRunnable);
     }
 }

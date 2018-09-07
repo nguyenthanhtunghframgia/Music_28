@@ -12,16 +12,22 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.framgia.music_28.R;
 import com.framgia.music_28.data.model.Genre;
+import com.framgia.music_28.screen.OnItemGenreClickListener;
 
 import java.util.ArrayList;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreHolder> {
     private ArrayList<Genre> mGenres;
     private Context mContext;
+    private OnItemGenreClickListener mOnItemGenreClickListener;
 
     public GenreAdapter(Context context, ArrayList<Genre> genres) {
         mContext = context;
         mGenres = genres;
+    }
+
+    public void setOnItemGenreClickListener(OnItemGenreClickListener onItemGenreClickListener) {
+        mOnItemGenreClickListener = onItemGenreClickListener;
     }
 
     @NonNull
@@ -29,7 +35,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreHolder>
     public GenreHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.item_genre, viewGroup, false);
-        return new GenreHolder(view, mContext);
+        return new GenreHolder(view, mContext, mGenres, mOnItemGenreClickListener);
     }
 
     @Override
@@ -46,13 +52,19 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreHolder>
         private Context mContext;
         private ImageButton mImageGenre;
         private TextView mTextGenreTitle;
+        private ArrayList<Genre> mGenres;
+        private OnItemGenreClickListener mOnItemGenreClickListener;
 
-        public GenreHolder(@NonNull View itemView, Context context) {
+        public GenreHolder(@NonNull View itemView, Context context,
+                           ArrayList<Genre> genres,
+                           OnItemGenreClickListener onItemGenreClickListener) {
             super(itemView);
             mContext = context;
+            mGenres = genres;
+            mOnItemGenreClickListener = onItemGenreClickListener;
             mImageGenre = itemView.findViewById(R.id.image_genre);
             mTextGenreTitle = itemView.findViewById(R.id.text_genre_title);
-            itemView.setOnClickListener(this);
+            mImageGenre.setOnClickListener(this);
         }
 
         private void bindData(Genre genre) {
@@ -62,6 +74,8 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreHolder>
 
         @Override
         public void onClick(View v) {
+            Genre genre = mGenres.get(getAdapterPosition());
+            mOnItemGenreClickListener.onItemGenreClick(genre.getName());
         }
     }
 }
