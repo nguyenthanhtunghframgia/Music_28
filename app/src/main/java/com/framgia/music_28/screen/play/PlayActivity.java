@@ -17,8 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.framgia.music_28.R;
 import com.framgia.music_28.data.model.Track;
+import com.framgia.music_28.screen.main.download.DownloadResultReceiver;
+import com.framgia.music_28.screen.main.download.DownloadService;
 import com.framgia.music_28.service.ButtonState;
 import com.framgia.music_28.service.MusicPlayerService;
 import com.framgia.music_28.service.MediaPlayerListener;
@@ -27,7 +30,8 @@ import com.framgia.music_28.service.MediaStates;
 
 public class PlayActivity extends AppCompatActivity implements View.OnClickListener,
         SeekBar.OnSeekBarChangeListener,
-        MediaPlayerListener {
+        MediaPlayerListener,
+        DownloadResultReceiver.Receiver {
     private ImageButton mButtonBack;
     private ImageButton mButtonDownload;
     private TextView mTextTrackName;
@@ -45,6 +49,7 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     private MusicPlayerService mMusicPlayerService;
     private Handler mHandler;
     private Runnable mRunnable;
+    public DownloadResultReceiver mDownloadResultReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +57,8 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_play);
         initViews();
         registerEventListener();
+        mDownloadResultReceiver = new DownloadResultReceiver(new Handler());
+        mDownloadResultReceiver.setReceiver(this);
     }
 
     @Override
@@ -113,7 +120,12 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
         mTextTrackName.setText(track.getTitle());
         mTextTrackUser.setText(track.getGenre());
         mTextDuration.setText(mMusicPlayerService.getDurationFormat(track.getDuration()));
-        Glide.with(this).load(track.getArtWorkUrl()).into(mImageTrack);
+        Glide.with(getApplicationContext())
+                .applyDefaultRequestOptions(new RequestOptions()
+                        .placeholder(R.drawable.ic_default_small_image)
+                        .error(R.drawable.ic_default_small_image))
+                .load(track.getArtWorkUrl())
+                .into(mImageTrack);
         mSeekBar.setMax(track.getDuration());
         updateTime();
     }
@@ -225,16 +237,19 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void doDownload() {
-        mMusicPlayerService.download();
+        Track track = mMusicPlayerService.getCurrentTrack();
+        startService(DownloadService.getDownloadServiceIntent(PlayActivity.this, track,
+                mDownloadResultReceiver));
     }
 
     private void doBack() {
-        onBackPressed();
         mHandler.removeCallbacks(mRunnable);
+        onBackPressed();
     }
 
     @Override
     protected void onStop() {
+        mHandler.removeCallbacks(mRunnable);
         super.onStop();
         if (mIsBound) {
             unbindService(mServiceConnection);
@@ -244,7 +259,19 @@ public class PlayActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mHandler.removeCallbacks(mRunnable);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        if (resultCode == DownloadService.RESULT_OK) {
+            Toast.makeText(this, getResources().
+                    getString(R.string.download_complete), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this,
+                    String.valueOf(resultData.getParcelable(DownloadService.EXTRA_FAIL)),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -1,9 +1,19 @@
 package com.framgia.music_28.util;
 
+import android.os.Environment;
+
 import com.framgia.music_28.BuildConfig;
 
 public class StringUtils {
     public static final String DURATION_FORMAT = "mm:ss";
+
+    public static String getDownloadPath() {
+        StringBuilder builder = new StringBuilder();
+        builder = builder.append(Environment.getExternalStorageDirectory())
+                .append("/")
+                .append(Environment.DIRECTORY_MUSIC);
+        return builder.toString();
+    }
 
     public static String getTrackAPI(String genre) {
         StringBuilder builder = new StringBuilder();
