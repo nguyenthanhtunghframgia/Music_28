@@ -4,4 +4,6 @@
     <string name="genre_fragment_title">Genres</string>
     <string name="download_fragment_title">Download</string>
     <string name="media_error">Error</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="download_fail">Download Fail</string>
 </resources>

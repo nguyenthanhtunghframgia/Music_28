@@ -1,5 +1,7 @@
 package com.framgia.music_28.service;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +10,13 @@ import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
+import com.framgia.music_28.R;
 import com.framgia.music_28.data.model.Track;
+import com.framgia.music_28.screen.play.PlayActivity;
+import com.framgia.music_28.util.Constants;
 import com.framgia.music_28.util.StringUtils;
 
 import java.io.IOException;
@@ -42,6 +49,9 @@ public class MusicPlayerService extends Service implements ISubject {
     private int mRepeat;
     private int mState = MediaStates.IDLE;
     private List<MediaPlayerListener> mListeners;
+    private String mTextTitle;
+    private String mTextUser;
+    private String mUri;
 
     public class MyServiceBinder extends Binder {
         public MusicPlayerService getMusicService() {
@@ -62,6 +72,7 @@ public class MusicPlayerService extends Service implements ISubject {
         mRandom = new Random();
         mPlayer = new MediaPlayer();
         mListeners = new ArrayList<>();
+        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         initMediaPlayer();
     }
 
@@ -73,18 +84,39 @@ public class MusicPlayerService extends Service implements ISubject {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mTracks = intent.getParcelableArrayListExtra(EXTRA_TRACKS);
-        mCurrentTrack = intent.getIntExtra(EXTRA_TRACK_POSITION, 0);
-        changeState(IDLE);
-        playTrack();
-        return START_STICKY;
+        if (intent.getAction() == null) {
+            mTracks = intent.getParcelableArrayListExtra(EXTRA_TRACKS);
+            mCurrentTrack = intent.getIntExtra(EXTRA_TRACK_POSITION, 0);
+            changeState(IDLE);
+            playTrack();
+            return START_NOT_STICKY;
+        } else {
+            switch (intent.getAction()) {
+                case Constants.ACTION_PLAY:
+                    playTrack();
+                    break;
+                case Constants.ACTION_NEXT:
+                    next();
+                    break;
+                case Constants.ACTION_PREVIOUS:
+                    previous();
+                    break;
+                case Constants.ACTION_DISMISS:
+                    stopForeground(true);
+                    stopSelf();
+                    break;
+                default:
+                    break;
+            }
+            return START_STICKY;
+        }
     }
 
     private final MediaPlayer.OnPreparedListener mOnPreparedListener =
             new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                    mPlayer.start();
                 }
             };
 
@@ -129,19 +161,28 @@ public class MusicPlayerService extends Service implements ISubject {
                     mPlayer.reset();
                 }
                 Track track = mTracks.get(mCurrentTrack);
-                mPlayer.setDataSource(StringUtils.getStreamTrackAPI(String.valueOf(track.getId())));
-                mPlayer.prepare();
-                mPlayer.start();
+                mTextTitle = track.getTitle();
+                mTextUser = track.getGenre();
+                mUri = track.getArtWorkUrl();
+                if (mUri != null) {
+                    mPlayer.setDataSource(StringUtils.getStreamTrackAPI(String.valueOf(track.getId())));
+                } else {
+                    mPlayer.setDataSource(track.getDownloadUrl());
+                }
+                mPlayer.prepareAsync();
                 changeState(PLAYING);
+                showNotification();
                 return;
             }
             if (mState == PLAYING) {
                 pause();
+                showNotification();
                 return;
             }
             if (mState == MediaStates.PAUSED) {
                 mPlayer.start();
                 changeState(PLAYING);
+                showNotification();
                 return;
             }
         } catch (IOException e) {
@@ -314,6 +355,66 @@ public class MusicPlayerService extends Service implements ISubject {
         return dateFormat.format(new Date(duration));
     }
 
-    public void download() {
+    public void showNotification() {
+        Intent notificationIntent = new Intent(this, PlayActivity.class);
+        notificationIntent.setAction(Constants.ACTION_MAIN);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
+                0, notificationIntent, 0);
+
+        Intent previousIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+        previousIntent.setAction(Constants.ACTION_PREVIOUS);
+        PendingIntent previousPendingIntent = PendingIntent.getService(getApplicationContext(),
+                0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent playIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+        playIntent.setAction(Constants.ACTION_PLAY);
+        PendingIntent playPendingIntent = PendingIntent.getService(getApplicationContext(),
+                0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent nextIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+        nextIntent.setAction(Constants.ACTION_NEXT);
+        PendingIntent nextPendingIntent = PendingIntent.getService(getApplicationContext(),
+                0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent dismissIntent = new Intent(getApplicationContext(), MusicPlayerService.class);
+        dismissIntent.setAction(Constants.ACTION_DISMISS);
+        PendingIntent dismissPendingIntent = PendingIntent.getService(getApplicationContext(),
+                0, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custome_notification);
+        remoteViews.setTextViewText(R.id.small_track_name, mTextTitle);
+        remoteViews.setTextViewText(R.id.small_track_user, mTextUser);
+        remoteViews.setImageViewResource(R.id.small_image_track, R.drawable.ic_default_small_image);
+        remoteViews.setImageViewResource(R.id.small_track_previous, R.drawable.ic_skip_previous);
+        if (mPlayer.isPlaying()) {
+            remoteViews.setImageViewResource(R.id.small_track_play_pause,
+                    R.drawable.ic_pause_circle_outline);
+        } else {
+            remoteViews.setImageViewResource(R.id.small_track_play_pause, R.drawable.ic_play_arrow);
+        }
+        remoteViews.setImageViewResource(R.id.small_track_next, R.drawable.ic_skip_next);
+        remoteViews.setImageViewResource(R.id.small_clear, R.drawable.ic_clear);
+        remoteViews.setOnClickPendingIntent(R.id.small_track_previous, previousPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.small_track_play_pause, playPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.small_track_next, nextPendingIntent);
+        remoteViews.setOnClickPendingIntent(R.id.small_clear, dismissPendingIntent);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                getApplicationContext(), null);
+        builder.setSmallIcon(R.drawable.ic_default_small_image)
+                .setContentIntent(pendingIntent)
+                .setCustomContentView(remoteViews);
+
+        Notification notification = builder.build();
+        startForeground(Constants.ID_FOREGROUND_SERVICE, notification);
+    }
+
+    @Override
+    public void onDestroy() {
+        mPlayer.release();
+        stopSelf();
+        super.onDestroy();
     }
 }

@@ -21,10 +21,15 @@ import com.framgia.music_28.data.model.Track;
 import com.framgia.music_28.data.repository.TrackRepository;
 import com.framgia.music_28.data.source.local.TrackLocalDataSource;
 import com.framgia.music_28.data.source.remote.TrackRemoteDataSource;
+import com.framgia.music_28.screen.OnItemTrackClickListener;
+import com.framgia.music_28.screen.play.PlayActivity;
+import com.framgia.music_28.service.MusicPlayerService;
 
 import java.util.ArrayList;
 
-public class GenreDetailActivity extends AppCompatActivity implements GenreDetailContract.View, View.OnClickListener {
+public class GenreDetailActivity extends AppCompatActivity implements GenreDetailContract.View,
+        View.OnClickListener,
+        OnItemTrackClickListener {
     private static final String EXTRA_GENRE_NAME =
             "com.framgia.music_28.screen.genredetail.EXTRA_GENRE_NAME";
     private GenreDetailContract.Presenter mPresenter;
@@ -93,6 +98,7 @@ public class GenreDetailActivity extends AppCompatActivity implements GenreDetai
     public void displayGenres(ArrayList<Track> tracks) {
         RecyclerView recyclerView = findViewById(R.id.genre_detail_recycler_view);
         GenreDetailAdapter genreDetailAdapter = new GenreDetailAdapter(this, tracks);
+        genreDetailAdapter.setOnItemTrackClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(genreDetailAdapter);
     }
@@ -105,5 +111,11 @@ public class GenreDetailActivity extends AppCompatActivity implements GenreDetai
     @Override
     public void onClick(View v) {
         onBackPressed();
+    }
+
+    @Override
+    public void onItemClick(ArrayList<Track> tracks, int position) {
+        startService(MusicPlayerService.getServiceIntent(this, tracks, position));
+        startActivity(PlayActivity.getPlayIntent(this));
     }
 }

@@ -3,6 +3,7 @@
     package="com.framgia.music_28">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,17 +12,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screen.main.MainActivity">
+        <activity
+            android:name=".screen.main.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screen.play.PlayActivity" />
-        <activity android:name=".screen.genredetail.GenreDetailActivity"/>
+        <activity
+            android:name=".screen.play.PlayActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".screen.genredetail.GenreDetailActivity"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".service.MusicPlayerService"
             android:exported="false" />
+        <service android:name=".screen.main.download.DownloadService" />
     </application>
 
 </manifest>
