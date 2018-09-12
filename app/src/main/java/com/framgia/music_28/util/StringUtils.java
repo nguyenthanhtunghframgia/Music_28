@@ -33,4 +33,14 @@ public class StringUtils {
         builder.append(BuildConfig.API_KEY);
         return builder.toString();
     }
+
+    public static String getSearchTrackAPI(String title) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(Constants.BASE_SEARCH_API);
+        builder.append(Constants.SEARCH_CLIENT_ID);
+        builder.append(BuildConfig.API_KEY);
+        builder.append(Constants.SEARCH_QUERY);
+        builder.append(title);
+        return builder.toString();
+    }
 }

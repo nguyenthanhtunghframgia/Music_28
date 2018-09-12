@@ -39,6 +39,11 @@ public class TrackRepository implements TrackDataSource.RemoteDataSource, TrackD
     }
 
     @Override
+    public void searchTrackRemote(String title, OnFetchDataListener onFetchDataListener) {
+        mTrackRemoteDataSource.searchTrackRemote(title, onFetchDataListener);
+    }
+
+    @Override
     public ArrayList<Track> getTracks() {
         return mTrackLocalDataSource.getTracks();
     }

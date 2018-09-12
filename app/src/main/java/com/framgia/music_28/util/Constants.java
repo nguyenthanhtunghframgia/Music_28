@@ -4,6 +4,9 @@ public class Constants {
     public static final String PARA_MUSIC_GENRE = "/charts?kind=top&genre=soundcloud:genres:";
     public static final String BASE_API = "https://api-v2.soundcloud.com";
     public static final String BASE_STREAM_API = "http://api.soundcloud.com/tracks/";
+    public static final String BASE_SEARCH_API = "https://api.soundcloud.com/tracks/";
+    public static final String SEARCH_CLIENT_ID = "?client_id=";
+    public static final String SEARCH_QUERY = "&linked_partitioning=1&q=";
     public static final String ALL_MUSIC = "all-music";
     public static final String CLIENT_ID = "&client_id=";
     public static final String CLIENT_STREAM_ID = "/stream?client_id=";
@@ -22,4 +25,5 @@ public class Constants {
     public static final int BUFF_SIZE = 1024;
     public static final String QUERY_KEY = " LIKE ? ";
     public static final String FOLDER_PATH = "%Music%";
+    public static final String EMPTY_KEY_WORD = "";
 }

@@ -12,6 +12,8 @@ public interface TrackDataSource {
     interface RemoteDataSource {
         void getTrackRemote(String genre, OnFetchDataListener onFetchDataListener);
 
+        void searchTrackRemote(String title, OnFetchDataListener onFetchDataListener);
+
         interface OnFetchDataListener {
             void onSuccess(ArrayList<Track> tracks);
 
