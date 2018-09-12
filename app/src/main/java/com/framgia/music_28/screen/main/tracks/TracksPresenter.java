@@ -39,6 +39,22 @@ public class TracksPresenter implements TracksContract.Presenter {
     }
 
     @Override
+    public void searchTracks(String title) {
+        mTrackRepository.searchTrackRemote(title,
+                new TrackDataSource.RemoteDataSource.OnFetchDataListener() {
+                    @Override
+                    public void onSuccess(ArrayList<Track> tracks) {
+                        mView.displayTracks(tracks);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
+    }
+
+    @Override
     public void start() {
 
     }

@@ -13,6 +13,8 @@ public interface TracksContract {
 
     interface Presenter extends BasePresenter {
         void getTracks();
+
+        void searchTracks(String title);
     }
 }
 

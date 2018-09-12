@@ -20,4 +20,9 @@ public class TrackRemoteDataSource implements TrackDataSource.RemoteDataSource {
     public void getTrackRemote(String genre, OnFetchDataListener onFetchDataListener) {
         new GetTrackFromUrl(onFetchDataListener).execute(StringUtils.getTrackAPI(genre));
     }
+
+    @Override
+    public void searchTrackRemote(String title, OnFetchDataListener onFetchDataListener) {
+        new SearchTrackFromUrl(onFetchDataListener).execute(StringUtils.getSearchTrackAPI(title));
+    }
 }

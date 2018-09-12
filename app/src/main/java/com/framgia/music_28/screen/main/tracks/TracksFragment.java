@@ -23,6 +23,7 @@ import com.framgia.music_28.data.source.remote.TrackRemoteDataSource;
 import com.framgia.music_28.screen.OnItemTrackClickListener;
 import com.framgia.music_28.screen.play.PlayActivity;
 import com.framgia.music_28.service.MusicPlayerService;
+import com.framgia.music_28.util.Constants;
 
 import java.util.ArrayList;
 
@@ -62,6 +63,14 @@ public class TracksFragment extends Fragment implements TracksContract.View, OnI
         mPresenter.getTracks();
     }
 
+    private void searchData(String s) {
+        mPresenter = new TracksPresenter(TrackRepository.getInstance(
+                TrackLocalDataSource.getInstance(getContext()),
+                TrackRemoteDataSource.getInstance()),
+                this);
+        mPresenter.searchTracks(s);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -76,6 +85,11 @@ public class TracksFragment extends Fragment implements TracksContract.View, OnI
 
             @Override
             public boolean onQueryTextChange(String s) {
+                if (s.equals(Constants.EMPTY_KEY_WORD)) {
+                    initData();
+                } else {
+                    searchData(s);
+                }
                 return false;
             }
         });
@@ -88,6 +102,7 @@ public class TracksFragment extends Fragment implements TracksContract.View, OnI
         tracksAdapter.setOnItemTrackClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(tracksAdapter);
+        tracksAdapter.notifyDataSetChanged();
     }
 
     @Override
