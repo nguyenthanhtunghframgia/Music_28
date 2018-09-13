@@ -6,4 +6,5 @@
     <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_76">76dp</dimen>
     <dimen name="dp_175">175dp</dimen>
+    <dimen name="dp_200">200dp</dimen>
 </resources>

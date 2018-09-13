@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -31,8 +32,9 @@ import com.framgia.music_28.util.Constants;
 import java.util.ArrayList;
 
 public class DownloadFragment extends Fragment implements DownloadContract.View,
-        OnItemTrackClickListener {
+        OnItemTrackClickListener, SwipeRefreshLayout.OnRefreshListener {
     private DownloadContract.Presenter mPresenter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public DownloadFragment() {
     }
@@ -70,10 +72,12 @@ public class DownloadFragment extends Fragment implements DownloadContract.View,
     @Override
     public void displayTracks(ArrayList<Track> tracks) {
         RecyclerView recyclerView = getView().findViewById(R.id.download_recycler_view);
+        mSwipeRefreshLayout = getView().findViewById(R.id.swipe_refresh_layout);
         DownloadAdapter downloadAdapter = new DownloadAdapter(getContext(), tracks);
         downloadAdapter.setOnItemTrackClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(downloadAdapter);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -110,5 +114,11 @@ public class DownloadFragment extends Fragment implements DownloadContract.View,
             }
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        initData();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }
